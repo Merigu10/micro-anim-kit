@@ -15,24 +15,10 @@ import {
   ProgressRing,
   type Status,
 } from '../src';
+import { colors, fonts, radius, spacing } from './theme';
+import { DemoCard, SectionHeading, Btn, InlineTile } from './components';
 
-const cardStyle: React.CSSProperties = {
-  background: '#161a22',
-  border: '1px solid #262b36',
-  borderRadius: 12,
-  padding: 20,
-  color: '#e6e8eb',
-};
-
-const buttonStyle: React.CSSProperties = {
-  background: '#2563eb',
-  color: 'white',
-  border: 'none',
-  borderRadius: 8,
-  padding: '8px 14px',
-  cursor: 'pointer',
-  fontSize: 13,
-};
+const statuses: Status[] = ['idle', 'loading', 'success', 'error'];
 
 export function App() {
   const [showEntry, setShowEntry] = useState(true);
@@ -52,8 +38,6 @@ export function App() {
   const [trend, setTrend] = useState([12, 18, 14, 22, 19, 27, 24, 31]);
   const [quota, setQuota] = useState(0.62);
   const [loading, setLoading] = useState(true);
-
-  const statuses: Status[] = ['idle', 'loading', 'success', 'error'];
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 1800);
@@ -80,224 +64,292 @@ export function App() {
   }
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        background: '#0b0d12',
-        fontFamily: 'system-ui, sans-serif',
-        padding: 40,
-        display: 'grid',
-        gap: 24,
-        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-        maxWidth: 1000,
-        margin: '0 auto',
-      }}
-    >
-      <h1 style={{ gridColumn: '1 / -1', color: '#e6e8eb', fontSize: 20, margin: 0 }}>
-        micro-anim-kit — dashboard micro-animation demo
-      </h1>
-
-      {/* Spring entries */}
-      <section style={cardStyle}>
-        <h2 style={{ fontSize: 14, marginTop: 0 }}>Spring Entries</h2>
-        <button style={buttonStyle} onClick={() => setShowEntry((s) => !s)}>
-          Toggle ({showEntry ? 'visible' : 'hidden'})
-        </button>
-        <div style={{ marginTop: 16, display: 'grid', gap: 10 }}>
-          <FadeIn show={showEntry}>
-            <div style={{ padding: 10, background: '#1f2430', borderRadius: 8 }}>FadeIn card</div>
-          </FadeIn>
-          <SlideIn show={showEntry} direction="left">
-            <div style={{ padding: 10, background: '#1f2430', borderRadius: 8 }}>SlideIn (left) card</div>
-          </SlideIn>
-          <PopIn show={showEntry}>
-            <div style={{ padding: 10, background: '#1f2430', borderRadius: 8 }}>PopIn card</div>
-          </PopIn>
-        </div>
-      </section>
-
-      {/* State transitions */}
-      <section style={cardStyle}>
-        <h2 style={{ fontSize: 14, marginTop: 0 }}>State Transitions</h2>
-        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 16 }}>
-          {statuses.map((s) => (
-            <button key={s} style={buttonStyle} onClick={() => setStatus(s)}>
-              {s}
-            </button>
-          ))}
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-          <StatusPulse status={status} />
-          <span style={{ fontSize: 13, opacity: 0.8 }}>{status}</span>
-        </div>
-        <StateSwitch state={status}>
-          {(s) => (
-            <div style={{ padding: 10, background: '#1f2430', borderRadius: 8, fontSize: 13 }}>
-              Current dashboard state: <strong>{s}</strong>
-            </div>
-          )}
-        </StateSwitch>
-      </section>
-
-      {/* Particles */}
-      <section style={cardStyle}>
-        <h2 style={{ fontSize: 14, marginTop: 0 }}>Canvas Particles</h2>
-        <button style={buttonStyle} onClick={() => setConfettiTrigger((t) => t + 1)}>
-          Fire confetti
-        </button>
-        <div style={{ marginTop: 12 }}>
-          <ConfettiBurst trigger={confettiTrigger} width={240} height={140} />
-        </div>
-      </section>
-
-      {/* Metric spark */}
-      <section style={cardStyle}>
-        <h2 style={{ fontSize: 14, marginTop: 0 }}>Metric Spark</h2>
-        <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-          <button style={buttonStyle} onClick={() => setMetricValue((v) => v + Math.ceil(Math.random() * 20))}>
-            Increase
-          </button>
-          <button style={buttonStyle} onClick={() => setMetricValue((v) => v - Math.ceil(Math.random() * 20))}>
-            Decrease
-          </button>
-        </div>
-        <div style={{ position: 'relative', width: 100, height: 50 }}>
-          <div
+    <div style={{ minHeight: '100vh', background: colors.canvas, fontFamily: fonts.body }}>
+      {/* Hero */}
+      <header style={{ padding: `${spacing[64]}px ${spacing[40]}px ${spacing[40]}px` }}>
+        <div style={{ maxWidth: 1080, margin: '0 auto' }}>
+          <div style={{ fontFamily: fonts.body, fontSize: 14, color: colors.textFaint, marginBottom: spacing[16] }}>
+            React · Spring physics · 0 runtime deps
+          </div>
+          <h1
             style={{
-              position: 'absolute',
-              inset: 0,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: 22,
-              fontWeight: 600,
+              fontFamily: fonts.display,
+              fontWeight: 400,
+              fontSize: 56,
+              lineHeight: 1.15,
+              letterSpacing: '-0.8px',
+              margin: `0 0 ${spacing[16]}px`,
+              color: colors.text,
             }}
           >
-            {metricValue}
+            micro-anim-kit
+          </h1>
+          <p style={{ fontFamily: fonts.body, fontSize: 17, lineHeight: 1.5, margin: `0 0 ${spacing[24]}px`, color: colors.textMuted, maxWidth: 620 }}>
+            A design system of micro-animations built specifically for dashboard UIs — KPI tiles, status
+            indicators, dismissible rows, and loading states, driven by spring physics instead of duration-based
+            tweens.
+          </p>
+          <div style={{ display: 'flex', gap: spacing[12], flexWrap: 'wrap' }}>
+            <a
+              href="https://github.com/Merigu10/micro-anim-kit"
+              style={{
+                background: colors.accent,
+                color: colors.accentInk,
+                borderRadius: radius.button,
+                padding: '10px 20px',
+                fontSize: 14,
+                fontWeight: 400,
+                textDecoration: 'none',
+              }}
+            >
+              View on GitHub
+            </a>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: spacing[8],
+                padding: '10px 20px',
+                borderRadius: radius.button,
+                fontSize: 14,
+                color: colors.textMuted,
+                border: `1px solid ${colors.border}`,
+              }}
+            >
+              ~7 kB gzip · tree-shakeable per category
+            </div>
           </div>
-          <MetricSpark value={metricValue} width={100} height={50} />
         </div>
-      </section>
+      </header>
 
-      {/* Stagger list */}
-      <section style={cardStyle}>
-        <h2 style={{ fontSize: 14, marginTop: 0 }}>Stagger List</h2>
-        <button style={buttonStyle} onClick={addRow}>
-          Add event
-        </button>
-        <div style={{ marginTop: 12, display: 'grid', gap: 8 }}>
-          <StaggerList staggerMs={60} direction="left" distance={20}>
-            {rows.map((row) => (
+      <main style={{ maxWidth: 1080, margin: '0 auto', padding: `${spacing[40]}px ${spacing[40]}px ${spacing[80]}px` }}>
+        {/* Entries */}
+        <div style={{ display: 'grid', gap: spacing[20], gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', alignItems: 'start', marginBottom: spacing[64] }}>
+          <SectionHeading
+            eyebrow="Entries"
+            title="Entry & list animations"
+            description="Spring-driven fade/slide/pop-in for cards and badges, plus staggered mount/unmount for lists that grow and shrink."
+          />
+
+          <DemoCard
+            title="FadeIn / SlideIn / PopIn"
+            pattern="A card or badge appearing on screen"
+            controls={
+              <Btn onClick={() => setShowEntry((s) => !s)}>Toggle ({showEntry ? 'visible' : 'hidden'})</Btn>
+            }
+          >
+            <FadeIn show={showEntry}>
+              <InlineTile>FadeIn card</InlineTile>
+            </FadeIn>
+            <SlideIn show={showEntry} direction="left">
+              <InlineTile>SlideIn (left) card</InlineTile>
+            </SlideIn>
+            <PopIn show={showEntry}>
+              <InlineTile>PopIn card</InlineTile>
+            </PopIn>
+          </DemoCard>
+
+          <DemoCard
+            title="StaggerList"
+            pattern="A table/list row arriving or being dismissed"
+            controls={<Btn onClick={addRow}>Add event</Btn>}
+          >
+            <StaggerList staggerMs={60} direction="left" distance={20}>
+              {rows.map((row) => (
+                <div
+                  key={row.id}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '10px 12px',
+                    background: colors.sectionFog,
+                    borderRadius: radius.smallCard,
+                    fontSize: 14,
+                    marginBottom: spacing[8],
+                  }}
+                >
+                  <span>{row.label}</span>
+                  <Btn variant="ghost" style={{ padding: '4px 12px', fontSize: 12 }} onClick={() => removeRow(row.id)}>
+                    Dismiss
+                  </Btn>
+                </div>
+              ))}
+            </StaggerList>
+          </DemoCard>
+        </div>
+
+        {/* Transitions */}
+        <div style={{ display: 'grid', gap: spacing[20], gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', alignItems: 'start', marginBottom: spacing[64] }}>
+          <SectionHeading
+            eyebrow="Transitions"
+            title="State & loading transitions"
+            description="Crossfade between loading/success/error views, pulse a sync indicator, and shimmer placeholders while data resolves."
+          />
+
+          <DemoCard
+            title="StateSwitch + StatusPulse"
+            pattern="A sync/status indicator crossfading between states"
+            controls={statuses.map((s) => (
+              <Btn key={s} variant={status === s ? 'filled' : 'ghost'} onClick={() => setStatus(s)}>
+                {s}
+              </Btn>
+            ))}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: spacing[8] }}>
+              <StatusPulse status={status} />
+              <span style={{ fontSize: 14, color: colors.textMuted }}>{status}</span>
+            </div>
+            <StateSwitch state={status}>
+              {(s) => (
+                <InlineTile>
+                  Current dashboard state: <strong>{s}</strong>
+                </InlineTile>
+              )}
+            </StateSwitch>
+          </DemoCard>
+
+          <DemoCard
+            title="Skeleton"
+            pattern="A widget placeholder while data loads"
+            controls={<Btn onClick={() => setLoading((l) => !l)}>Toggle loading</Btn>}
+          >
+            {loading ? (
+              <>
+                <Skeleton variant="circle" width={36} height={36} />
+                <Skeleton width="80%" />
+                <Skeleton width="60%" />
+              </>
+            ) : (
+              <>
+                <div style={{ width: 36, height: 36, borderRadius: '50%', background: colors.accent }} />
+                <div style={{ fontSize: 14 }}>Dashboard data loaded</div>
+                <div style={{ fontSize: 14, color: colors.textMuted }}>Last synced just now</div>
+              </>
+            )}
+          </DemoCard>
+        </div>
+
+        {/* Metrics */}
+        <div style={{ display: 'grid', gap: spacing[20], gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', alignItems: 'start', marginBottom: spacing[64] }}>
+          <SectionHeading
+            eyebrow="Metrics"
+            title="KPI-tile primitives"
+            description="Numbers that spring toward new values instead of snapping, with trend lines and gauges for quota/SLA widgets."
+          />
+
+          <DemoCard
+            title="CountUp + Sparkline"
+            pattern="A KPI number with a trend line, updating live"
+            controls={<Btn onClick={bumpRevenue}>Simulate update</Btn>}
+          >
+            <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
+              <div>
+                <div style={{ fontSize: 13, color: colors.textMuted, marginBottom: spacing[4] }}>Revenue (30d)</div>
+                <div style={{ fontFamily: fonts.display, fontSize: 28, fontWeight: 400 }}>
+                  $<CountUp value={revenue} spring="gentle" />
+                </div>
+              </div>
+              <Sparkline data={trend} width={110} height={40} color={colors.accent} fill={`${colors.accent}33`} />
+            </div>
+          </DemoCard>
+
+          <DemoCard
+            title="ProgressRing"
+            pattern="A quota/SLA/resource-usage gauge"
+            controls={<Btn onClick={bumpQuota}>Randomize usage</Btn>}
+          >
+            <ProgressRing value={quota} size={72} color={colors.accent} trackColor={colors.border}>
+              <span style={{ fontFamily: fonts.display, fontSize: 15, fontWeight: 400 }}>
+                <CountUp value={Math.round(quota * 100)} spring="stiff" />%
+              </span>
+            </ProgressRing>
+          </DemoCard>
+
+          <DemoCard
+            title="MetricSpark"
+            pattern="A number with a directional delta spark"
+            controls={
+              <>
+                <Btn onClick={() => setMetricValue((v) => v + Math.ceil(Math.random() * 20))}>Increase</Btn>
+                <Btn variant="ghost" onClick={() => setMetricValue((v) => v - Math.ceil(Math.random() * 20))}>
+                  Decrease
+                </Btn>
+              </>
+            }
+          >
+            <div style={{ position: 'relative', width: 100, height: 50 }}>
               <div
-                key={row.id}
                 style={{
+                  position: 'absolute',
+                  inset: 0,
                   display: 'flex',
-                  justifyContent: 'space-between',
                   alignItems: 'center',
-                  padding: '8px 10px',
-                  background: '#1f2430',
-                  borderRadius: 8,
-                  fontSize: 13,
+                  justifyContent: 'center',
+                  fontFamily: fonts.display,
+                  fontSize: 24,
+                  fontWeight: 400,
                 }}
               >
-                <span>{row.label}</span>
-                <button
-                  style={{ ...buttonStyle, background: '#2a2f3b', padding: '4px 8px', fontSize: 12 }}
-                  onClick={() => removeRow(row.id)}
-                >
-                  Dismiss
-                </button>
+                {metricValue}
               </div>
-            ))}
-          </StaggerList>
-        </div>
-      </section>
-
-      {/* Drag to dismiss */}
-      <section style={cardStyle}>
-        <h2 style={{ fontSize: 14, marginTop: 0 }}>Drag to Dismiss</h2>
-        <button style={buttonStyle} onClick={() => setToastKey((k) => k + 1)}>
-          Show toast ({dismissedCount} dismissed)
-        </button>
-        <div style={{ marginTop: 12, minHeight: 48 }}>
-          <DragDismiss
-            key={toastKey}
-            axis="x"
-            onDismiss={() => setDismissedCount((c) => c + 1)}
-            style={{
-              padding: '10px 14px',
-              background: '#1f2430',
-              borderRadius: 8,
-              fontSize: 13,
-              userSelect: 'none',
-            }}
-          >
-            Swipe me left or right to dismiss
-          </DragDismiss>
-        </div>
-      </section>
-
-      {/* KPI tile: CountUp + Sparkline */}
-      <section style={cardStyle}>
-        <h2 style={{ fontSize: 14, marginTop: 0 }}>KPI Tile (CountUp + Sparkline)</h2>
-        <button style={buttonStyle} onClick={bumpRevenue}>
-          Simulate update
-        </button>
-        <div style={{ marginTop: 16, display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
-          <div>
-            <div style={{ fontSize: 12, opacity: 0.7, marginBottom: 4 }}>Revenue (30d)</div>
-            <div style={{ fontSize: 26, fontWeight: 600 }}>
-              $<CountUp value={revenue} spring="gentle" />
+              <MetricSpark value={metricValue} width={100} height={50} />
             </div>
-          </div>
-          <Sparkline data={trend} width={110} height={40} color="#22c55e" fill="#22c55e22" />
+          </DemoCard>
         </div>
-      </section>
 
-      {/* Progress ring */}
-      <section style={cardStyle}>
-        <h2 style={{ fontSize: 14, marginTop: 0 }}>Progress Ring</h2>
-        <button style={buttonStyle} onClick={bumpQuota}>
-          Randomize usage
-        </button>
-        <div style={{ marginTop: 16 }}>
-          <ProgressRing value={quota} size={72} color="#a855f7">
-            <span style={{ fontSize: 14, fontWeight: 600 }}>
-              <CountUp value={Math.round(quota * 100)} spring="stiff" />%
-            </span>
-          </ProgressRing>
-        </div>
-      </section>
+        {/* Gestures & particles */}
+        <div style={{ display: 'grid', gap: spacing[20], gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', alignItems: 'start' }}>
+          <SectionHeading
+            eyebrow="Gestures & particles"
+            title="Interaction & celebration"
+            description="Swipe-to-dismiss toasts with velocity-based flick detection, and canvas particle bursts for milestone moments."
+          />
 
-      {/* Skeleton loader */}
-      <section style={cardStyle}>
-        <h2 style={{ fontSize: 14, marginTop: 0 }}>Skeleton Loader</h2>
-        <button style={buttonStyle} onClick={() => setLoading((l) => !l)}>
-          Toggle loading
-        </button>
-        <div style={{ marginTop: 16, display: 'grid', gap: 10 }}>
-          {loading ? (
-            <>
-              <Skeleton variant="circle" width={36} height={36} />
-              <Skeleton width="80%" />
-              <Skeleton width="60%" />
-            </>
-          ) : (
-            <>
-              <div
+          <DemoCard
+            title="DragDismiss"
+            pattern="A dismissible toast/notification"
+            controls={<Btn onClick={() => setToastKey((k) => k + 1)}>Show toast ({dismissedCount} dismissed)</Btn>}
+          >
+            <div style={{ minHeight: 44 }}>
+              <DragDismiss
+                key={toastKey}
+                axis="x"
+                onDismiss={() => setDismissedCount((c) => c + 1)}
                 style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: '50%',
-                  background: '#3b82f6',
+                  padding: '10px 14px',
+                  background: colors.sectionFog,
+                  borderRadius: radius.smallCard,
+                  fontSize: 14,
+                  userSelect: 'none',
                 }}
-              />
-              <div style={{ fontSize: 13 }}>Dashboard data loaded</div>
-              <div style={{ fontSize: 13, opacity: 0.7 }}>Last synced just now</div>
-            </>
-          )}
+              >
+                Swipe me left or right to dismiss
+              </DragDismiss>
+            </div>
+          </DemoCard>
+
+          <DemoCard
+            title="ConfettiBurst"
+            pattern="A task-complete / milestone celebration"
+            controls={<Btn onClick={() => setConfettiTrigger((t) => t + 1)}>Fire confetti</Btn>}
+          >
+            <ConfettiBurst trigger={confettiTrigger} width={240} height={140} />
+          </DemoCard>
         </div>
-      </section>
+      </main>
+
+      <footer
+        style={{
+          borderTop: `1px solid ${colors.border}`,
+          padding: `${spacing[24]}px ${spacing[40]}px`,
+          textAlign: 'center',
+          fontSize: 13,
+          color: colors.textFaint,
+        }}
+      >
+        micro-anim-kit — MIT-style demo · built with React + Vite
+      </footer>
     </div>
   );
 }
