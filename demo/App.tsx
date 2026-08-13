@@ -1,14 +1,18 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   FadeIn,
   SlideIn,
   PopIn,
   StateSwitch,
   StatusPulse,
+  Skeleton,
   ConfettiBurst,
   MetricSpark,
   StaggerList,
   DragDismiss,
+  CountUp,
+  Sparkline,
+  ProgressRing,
   type Status,
 } from '../src';
 
@@ -44,8 +48,27 @@ export function App() {
   const [nextRowId, setNextRowId] = useState(5);
   const [dismissedCount, setDismissedCount] = useState(0);
   const [toastKey, setToastKey] = useState(0);
+  const [revenue, setRevenue] = useState(48210);
+  const [trend, setTrend] = useState([12, 18, 14, 22, 19, 27, 24, 31]);
+  const [quota, setQuota] = useState(0.62);
+  const [loading, setLoading] = useState(true);
 
   const statuses: Status[] = ['idle', 'loading', 'success', 'error'];
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1800);
+    return () => clearTimeout(timer);
+  }, []);
+
+  function bumpRevenue() {
+    const delta = Math.round((Math.random() - 0.35) * 4000);
+    setRevenue((v) => Math.max(0, v + delta));
+    setTrend((t) => [...t.slice(1), Math.max(4, t[t.length - 1] + Math.round((Math.random() - 0.4) * 8))]);
+  }
+
+  function bumpQuota() {
+    setQuota((q) => Math.min(1, Math.max(0, q + (Math.random() - 0.5) * 0.3)));
+  }
 
   function addRow() {
     setRows((r) => [...r, { id: nextRowId, label: `New event #${nextRowId}` }]);
@@ -211,6 +234,68 @@ export function App() {
           >
             Swipe me left or right to dismiss
           </DragDismiss>
+        </div>
+      </section>
+
+      {/* KPI tile: CountUp + Sparkline */}
+      <section style={cardStyle}>
+        <h2 style={{ fontSize: 14, marginTop: 0 }}>KPI Tile (CountUp + Sparkline)</h2>
+        <button style={buttonStyle} onClick={bumpRevenue}>
+          Simulate update
+        </button>
+        <div style={{ marginTop: 16, display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
+          <div>
+            <div style={{ fontSize: 12, opacity: 0.7, marginBottom: 4 }}>Revenue (30d)</div>
+            <div style={{ fontSize: 26, fontWeight: 600 }}>
+              $<CountUp value={revenue} spring="gentle" />
+            </div>
+          </div>
+          <Sparkline data={trend} width={110} height={40} color="#22c55e" fill="#22c55e22" />
+        </div>
+      </section>
+
+      {/* Progress ring */}
+      <section style={cardStyle}>
+        <h2 style={{ fontSize: 14, marginTop: 0 }}>Progress Ring</h2>
+        <button style={buttonStyle} onClick={bumpQuota}>
+          Randomize usage
+        </button>
+        <div style={{ marginTop: 16 }}>
+          <ProgressRing value={quota} size={72} color="#a855f7">
+            <span style={{ fontSize: 14, fontWeight: 600 }}>
+              <CountUp value={Math.round(quota * 100)} spring="stiff" />%
+            </span>
+          </ProgressRing>
+        </div>
+      </section>
+
+      {/* Skeleton loader */}
+      <section style={cardStyle}>
+        <h2 style={{ fontSize: 14, marginTop: 0 }}>Skeleton Loader</h2>
+        <button style={buttonStyle} onClick={() => setLoading((l) => !l)}>
+          Toggle loading
+        </button>
+        <div style={{ marginTop: 16, display: 'grid', gap: 10 }}>
+          {loading ? (
+            <>
+              <Skeleton variant="circle" width={36} height={36} />
+              <Skeleton width="80%" />
+              <Skeleton width="60%" />
+            </>
+          ) : (
+            <>
+              <div
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: '50%',
+                  background: '#3b82f6',
+                }}
+              />
+              <div style={{ fontSize: 13 }}>Dashboard data loaded</div>
+              <div style={{ fontSize: 13, opacity: 0.7 }}>Last synced just now</div>
+            </>
+          )}
         </div>
       </section>
     </div>
